@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator - Find Your Exact Age</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 8px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        .calculator-container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #357ab8;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            display: none;
+        }
+        .result h2 {
+            margin-top: 0;
+            color: #4a90e2;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .feature-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .feature-item:before {
+            content: "✔";
+            color: #4CAF50;
+            margin-right: 8px;
+        }
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+        }
+        @media (max-width: 600px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Discover Your Exact Age in Years, Months & Days - Free Instant Calculation!</h1>
+    </header>
+
+    <div class="calculator-container">
+        <h2>Calculate Your Age Instantly</h2>
+        <p>Our free age calculator helps you determine:</p>
+        <ul>
+            <li>Your exact age in years, months and days</li>
+            <li>How many days you've been alive</li>
+            <li>Your age on any future or past date</li>
+            <li>Your next birthday countdown</li>
+        </ul>
+        <p>Simply enter your birth date below and get instant results!</p>
+
+        <div class="input-group">
+            <label for="birthdate">Your Birth Date:</label>
+            <input type="date" id="birthdate" required>
+        </div>
+        
+        <div class="input-group">
+            <label for="targetdate">Target Date (optional):</label>
+            <input type="date" id="targetdate">
+            <small>Leave blank to use today's date</small>
+        </div>
+        
+        <button onclick="calculateAge()">Calculate Age</button>
+        
+        <div id="result" class="result">
+            <h2>Your Age Results</h2>
+            <p id="ageResult"></p>
+            <p id="birthdayInfo"></p>
+            <p id="nextBirthday"></p>
+            <p id="daysLived"></p>
+        </div>
+    </div>
+
+    <div class="calculator-container">
+        <h2>Why Use Our Age Calculator?</h2>
+        <div class="features">
+            <div class="feature-item">100% Accurate Calculations</div>
+            <div class="feature-item">Simple and Easy to Use</div>
+            <div class="feature-item">Mobile-Friendly Design</div>
+            <div class="feature-item">No Registration Required</div>
+            <div class="feature-item">Completely Free Service</div>
+        </div>
+    </div>
+
+    <div class="calculator-container">
+        <h2>How It Works</h2>
+        <ol>
+            <li>Enter your birth date (day, month, year)</li>
+            <li>Optionally select another date to compare</li>
+            <li>Click "Calculate Age"</li>
+            <li>View your detailed age results instantly!</li>
+        </ol>
+    </div>
+
+    <div class="calculator-container">
+        <h2>Frequently Asked Questions</h2>
+        
+        <h3>How accurate is this age calculator?</h3>
+        <p>Our calculator provides 100% accurate results based on the dates you enter.</p>
+        
+        <h3>Can I calculate age at a specific date?</h3>
+        <p>Yes! You can enter any date to find out how old you were/will be on that day.</p>
+        
+        <h3>Does this work for historical dates?</h3>
+        <p>Absolutely - works for any valid date combination.</p>
+    </div>
+
+    <footer>
+        <p>© <span id="currentYear"></span> AgeCalculator.com | Privacy Policy | Contact Us</p>
+    </footer>
+
+    <script>
+        // Set current year in footer
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        function calculateAge() {
+            const birthdate = new Date(document.getElementById('birthdate').value);
+            let targetdate = new Date(document.getElementById('targetdate').value);
+            
+            // If no target date provided, use today's date
+            if (isNaN(targetdate.getTime())) {
+                targetdate = new Date();
+            }
+            
+            // Validate birthdate
+            if (isNaN(birthdate.getTime())) {
+                alert('Please enter a valid birth date');
+                return;
+            }
+            
+            // Check if birthdate is in the future
+            if (birthdate > targetdate) {
+                alert('Birth date cannot be in the future');
+                return;
+            }
+            
+            // Calculate age
+            let years = targetdate.getFullYear() - birthdate.getFullYear();
+            let months = targetdate.getMonth() - birthdate.getMonth();
+            let days = targetdate.getDate() - birthdate.getDate();
+            
+            // Adjust for negative months or days
+            if (days < 0) {
+                months--;
+                // Get last day of previous month
+                const lastDayOfMonth = new Date(
+                    targetdate.getFullYear(),
+                    targetdate.getMonth(),
+                    0
+                ).getDate();
+                days += lastDayOfMonth;
+            }
+            
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            
+            // Calculate days lived
+            const diffTime = Math.abs(targetdate - birthdate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            
+            // Calculate next birthday
+            const nextBirthday = new Date(
+                targetdate.getFullYear(),
+                birthdate.getMonth(),
+                birthdate.getDate()
+            );
+            
+            if (nextBirthday < targetdate) {
+                nextBirthday.setFullYear(nextBirthday.getFullYear() + 1);
+            }
+            
+            const daysUntilBirthday = Math.ceil(
+                (nextBirthday - targetdate) / (1000 * 60 * 60 * 24)
+            );
+            
+            // Format birth day name
+            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const birthDayName = dayNames[birthdate.getDay()];
+            
+            // Display results
+            document.getElementById('ageResult').innerHTML = 
+                `<strong>Your Age is:</strong> ${years} years, ${months} months and ${days} days`;
+                
+            document.getElementById('birthdayInfo').innerHTML = 
+                `<strong>You were born on:</strong> ${birthDayName}, ${formatDate(birthdate)}`;
+                
+            document.getElementById('nextBirthday').innerHTML = 
+                `<strong>Next birthday in:</strong> ${daysUntilBirthday} days (${formatDate(nextBirthday)})`;
+                
+            document.getElementById('daysLived').innerHTML = 
+                `<strong>Days lived:</strong> ${diffDays} days`;
+                
+            document.getElementById('result').style.display = 'block';
+        }
+        
+        function formatDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString(undefined, options);
+        }
+    </script>
+</body>
+</html>
